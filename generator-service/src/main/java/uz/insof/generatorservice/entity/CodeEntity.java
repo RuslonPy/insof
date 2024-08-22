@@ -16,10 +16,10 @@ public class CodeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String code;
+    private Integer code;
 
     @Column(nullable = false)
-    private Long userId;
+    private String username;
 
     @Column(nullable = false)
     private LocalDateTime generatedAt;

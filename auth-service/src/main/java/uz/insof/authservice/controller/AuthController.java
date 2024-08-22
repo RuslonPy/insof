@@ -1,13 +1,10 @@
 package uz.insof.authservice.controller;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.insof.authservice.config.AuthService;
-import uz.insof.authservice.dto.LoginRequest;
-import uz.insof.authservice.dto.UserResponse;
 
 @RestController
 @RequestMapping("/auth")

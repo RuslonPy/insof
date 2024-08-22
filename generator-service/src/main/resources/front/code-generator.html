@@ -38,16 +38,15 @@
         event.preventDefault();
         const login = document.getElementById('login').value;
 
-        fetch('/code-generator/generate', {
-            method: 'POST',
+        fetch(`http://localhost:8080/code-generator/generate/${login}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ login })
+            }
         })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('generated-code').textContent = 'Generated Code: ' + data.code;
+                document.getElementById('generated-code').textContent = 'Generated Code: ' + data;
 
                 // Update code history
                 loadCodeHistory();
@@ -55,7 +54,8 @@
     });
 
     function loadCodeHistory() {
-        fetch('/code-generator/history')
+        const login = document.getElementById('login').value;
+        fetch(`http://localhost:8080/code-generator/history/${login}`)
             .then(response => response.json())
             .then(codes => {
                 const tbody = document.getElementById('code-history');
