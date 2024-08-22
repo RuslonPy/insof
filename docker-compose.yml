@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  auth-service:
+    image: auth-service:latest
+    build: ./auth-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - kafka
+
+  generator-service:
+    image: code-generator-service:latest
+    build: ./code-generator-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - kafka
+
+  click-tracker-service:
+    image: click-tracker-service:latest
+    build: ./click-tracker-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+      - kafka
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres-user
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+    ports:
+      - "9092:9092"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
