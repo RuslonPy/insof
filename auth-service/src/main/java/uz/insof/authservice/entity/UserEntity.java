@@ -19,7 +19,7 @@ public class UserEntity {
     private String login;
 
     @Column(nullable = false)
-    private String passwordHash;
+    private String code;
 
     @Column(nullable = false)
     private LocalDateTime registeredAt;

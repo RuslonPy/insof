@@ -27,8 +27,7 @@ public class AuthService {
 
         if (optionalUser.isPresent()) {
             UserEntity user = optionalUser.get();
-            // Here, you should verify the code (e.g., a code generated earlier for the user)
-            if (passwordEncoder.matches(code, user.getCodeHash())) {
+            if (passwordEncoder.matches(code, user.getCode())) {
                 createSessionForUser(user);
                 return true;
             }
@@ -38,10 +37,8 @@ public class AuthService {
     }
 
     private void createSessionForUser(UserEntity user) {
-        // Generate a session token (you could use UUID or any other method)
         String sessionToken = UUID.randomUUID().toString();
 
-        // Set session expiration (e.g., 4 minutes)
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expiresAt = now.plusMinutes(4);
 
@@ -50,12 +47,7 @@ public class AuthService {
         session.setSessionToken(sessionToken);
         session.setCreatedAt(now);
         session.setExpiresAt(expiresAt);
-
         sessionRepository.save(session);
-
-        // Store sessionToken in some form of storage (e.g., HttpSession or as a cookie)
-        // Here, assuming HttpSession
-        // httpSession.setAttribute("sessionToken", sessionToken);
     }
 
     public UserEntity validateSession(String sessionToken) {

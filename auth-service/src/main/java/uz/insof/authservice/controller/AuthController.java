@@ -17,29 +17,19 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
-        boolean isAuthenticated = authService.authenticate(request.getLogin(), request.getCode());
-        if (isAuthenticated) {
-            session.setAttribute("user", request.getLogin());
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
+    public ResponseEntity<?> login(@RequestParam String login, @RequestParam String code) {
+        boolean isAuthenticated = authService.authenticate(login, code);
 
-    @GetMapping("/user")
-    public ResponseEntity<UserResponse> getUser(HttpSession session) {
-        String login = (String) session.getAttribute("user");
-        if (login == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        if (isAuthenticated) {
+            return ResponseEntity.ok("Authenticated");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid login or code");
         }
-        UserResponse user = authService.getUserByLogin(login);
-        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> logout(@RequestParam String sessionToken) {
+        authService.invalidateSession(sessionToken);
+        return ResponseEntity.ok("Logged out");
     }
 }
