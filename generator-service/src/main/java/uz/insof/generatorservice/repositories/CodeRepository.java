@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 public interface CodeRepository extends JpaRepository<CodeEntity, Long> {
     List<CodeEntity> findAllByUsername(String username);
+    Optional<CodeEntity> findFirstByUsernameOrderByGeneratedAtDesc(String username);
 }
 

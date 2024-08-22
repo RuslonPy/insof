@@ -26,5 +26,10 @@ public class CodeGeneratorController {
     public List<CodeHistory> getCodeHistory(@PathVariable String login){
         return codeGenerationService.getCodeHistories(login);
     }
+
+    @GetMapping("/latest/{username}")
+    public Integer getLastGeneratedCode(@PathVariable String username) {
+        return codeGenerationService.getLastGeneratedCode(username);
+    }
 }
 

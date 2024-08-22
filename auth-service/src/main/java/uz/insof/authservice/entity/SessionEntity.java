@@ -14,7 +14,7 @@ public class SessionEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private String username;
 
     @Column(nullable = false)
     private String sessionToken;

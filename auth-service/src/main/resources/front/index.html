@@ -33,7 +33,7 @@
         const login = document.getElementById('login').value;
         const code = document.getElementById('code').value;
 
-        fetch('/auth/login', {
+        fetch(`http://localhost:8081/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

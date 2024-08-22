@@ -47,4 +47,9 @@ public class CodeGenerationService {
         return codeHistories;
 
     }
+
+    public Integer getLastGeneratedCode(String username) {
+        Optional<CodeEntity> code = codeRepository.findFirstByUsernameOrderByGeneratedAtDesc(username);
+        return code.get().getCode();
+    }
 }
