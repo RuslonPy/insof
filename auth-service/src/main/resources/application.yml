@@ -1,4 +1,18 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres-user
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -9,3 +23,5 @@ spring:
     listener:
       concurrency: 3
       missing-topics-fatal: false
+
+
