@@ -17,14 +17,14 @@ public class ClickHistoryEntity implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private String username;
 
     @Column(nullable = false)
     private LocalDateTime clickedAt;
 
     @Column(nullable = false)
-    private int xCoordinate;
+    private Integer xCoordinate;
 
     @Column(nullable = false)
-    private int yCoordinate;
+    private Integer yCoordinate;
 }

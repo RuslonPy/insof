@@ -64,6 +64,30 @@
                 window.location.href = '/index.html';
             });
     });
+    let username = document.cookie
+    console.log('user', username)
+    document.addEventListener('click', function (event) {
+        let coordinateX = event.clientX
+        let coordinateY = event.clientY
+        if(event){
+            fetch('http://localhost:8082/click-tracker/track', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    xCoordinate: coordinateX,
+                    yCoordinate: coordinateY,
+                    clickedAt: new Date(),
+                })
+            })
+                .then((response)=>{
+                    console.log('Cookie', allCookies)
+                    console.log(response)
+                })
+        }
+    })
 
     loadUserData();
 </script>

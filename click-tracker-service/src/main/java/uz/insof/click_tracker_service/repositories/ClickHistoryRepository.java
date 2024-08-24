@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ClickHistoryRepository extends JpaRepository<ClickHistoryEntity, Long> {
-    List<ClickHistoryEntity> findByUserId(Long userId);
+    List<ClickHistoryEntity> findAllByUsername(String name);
 }

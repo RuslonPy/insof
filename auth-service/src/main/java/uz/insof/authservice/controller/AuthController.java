@@ -22,7 +22,7 @@ public class AuthController {
         boolean isAuthenticated = authService.authenticate(login, code);
 
         if (isAuthenticated) {
-            return ResponseEntity.ok("Authenticated");
+            return ResponseEntity.ok(login);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid login or code");
         }
