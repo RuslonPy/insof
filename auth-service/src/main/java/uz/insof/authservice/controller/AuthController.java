@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.insof.authservice.config.AuthService;
+import uz.insof.authservice.service.AuthService;
 import uz.insof.authservice.dto.LoginRequest;
 
 @RestController
@@ -19,13 +19,19 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         String login = loginRequest.getLogin();
         Integer code = loginRequest.getCode();
-        boolean isAuthenticated = authService.authenticate(login, code);
+        ResponseEntity<String> authenticated = authService.authenticate(login, code);
 
-        if (isAuthenticated) {
-            return ResponseEntity.ok(login);
+        if (authenticated.getStatusCode().equals(HttpStatus.OK)) {
+            return ResponseEntity.ok(authenticated);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid login or code");
         }
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUser(@RequestHeader("Authorization") String sessionToken) {
+        return authService.getUser(sessionToken);
+
     }
 
     @PostMapping("/logout")

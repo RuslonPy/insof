@@ -17,35 +17,61 @@
         <tr>
             <th>Date</th>
             <th>X Coordinate</th>
-            <th>X Coordinate</th>
+            <th>Y Coordinate</th>
         </tr>
         </thead>
         <tbody id="click-history">
-        <!-- Click history will be populated here -->
         </tbody>
     </table>
 </div>
 
 <script>
+    // Retrieve session token from cookies
+    function getSessionToken() {
+        const cookieArray = document.cookie.split(';');
+        for (let i = 0; i < cookieArray.length; i++) {
+            let cookie = cookieArray[i].trim();
+            if (cookie.startsWith("sessionToken=")) {
+                return cookie.substring("sessionToken=".length, cookie.length);
+            }
+        }
+        return null;
+    }
+
     // Fetch user info and click history
     function loadUserData() {
-        fetch('/auth/user')
-            .then(response => response.json())
+        const sessionToken = getSessionToken();
+
+        fetch('http://localhost:8081/auth/user', {
+            headers: {
+                'Authorization': sessionToken
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    window.location.href = 'http://localhost:63342/insof/auth-service/src/main/resources/front/login.html';
+                }
+                return response.json();
+            })
             .then(user => {
                 document.getElementById('username').textContent = user.login;
 
                 // Fetch click history
-                fetch('/click-tracker/history?userId=' + user.id)
+                fetch('http://localhost:8081/click-tracker/track' + user, {
+                    headers: {
+                        'Authorization': sessionToken
+                    }
+                })
                     .then(response => response.json())
                     .then(clicks => {
                         const tbody = document.getElementById('click-history');
                         clicks.forEach(click => {
                             const row = document.createElement('tr');
                             row.innerHTML = `
-                                    <td>${click.clickedAt}</td>
-                                    <td>${click.xCoordinate}</td>
-                                    <td>${click.yCoordinate}</td>
-                                `;
+                        <td>${click.clickedAt}</td>
+                        <td>${click.xCoordinate}</td>
+                        <td>${click.yCoordinate}</td>
+                    `;
                             tbody.appendChild(row);
                         });
                     });
@@ -54,40 +80,43 @@
 
     // Handle logout
     document.getElementById('logout-button').addEventListener('click', function() {
-        fetch('/auth/logout', {
+        const sessionToken = getSessionToken();
+
+        fetch('http://localhost:8080/auth/logout', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': sessionToken
             }
         })
             .then(() => {
-                window.location.href = '/index.html';
+                document.cookie = 'sessionToken=; Max-Age=0'; // Clear the session token cookie
+                window.location.href = 'http://localhost:63342/insof/auth-service/src/main/resources/front/login.html';
             });
     });
-    let username = document.cookie
-    console.log('user', username)
-    document.addEventListener('click', function (event) {
-        let coordinateX = event.clientX
-        let coordinateY = event.clientY
-        if(event){
-            fetch('http://localhost:8082/click-tracker/track', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: username,
-                    xCoordinate: coordinateX,
-                    yCoordinate: coordinateY,
-                    clickedAt: new Date(),
-                })
+
+    // Track user clicks and send them to the backend
+    document.addEventListener('click', function(event) {
+        const coordinateX = event.clientX;
+        const coordinateY = event.clientY;
+        const sessionToken = getSessionToken();
+
+        fetch('http://localhost:8082/click-tracker/track', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': sessionToken
+            },
+            body: JSON.stringify({
+                xCoordinate: coordinateX,
+                yCoordinate: coordinateY,
+                clickedAt: new Date(),
             })
-                .then((response)=>{
-                    console.log('Cookie', allCookies)
-                    console.log(response)
-                })
-        }
-    })
+        })
+            .then(response => {
+                console.log(response);
+            });
+    });
 
     loadUserData();
 </script>
